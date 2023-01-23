@@ -13,11 +13,13 @@ func main() {
 	inputArray := filereader.ReadFile("input.txt")
 	input := inputArray[0]
 
-	charsBeforeMarker := findCharsBeforeMarker(input)
+	charsBeforeMarker := findCharsBeforeMarker(input, 4)
+	charsBeforeWord := findCharsBeforeMarker(input, 14)
 	fmt.Println(charsBeforeMarker)
+	fmt.Println(charsBeforeWord)
 }
 
-func findCharsBeforeMarker(input string) int {
+func findCharsBeforeMarker(input string, uniqueChars int) int {
 	markerHolder := ""
 
 	for i, current := range input {
@@ -28,7 +30,7 @@ func findCharsBeforeMarker(input string) int {
 		}
 		markerHolder = markerHolder + string(current)
 
-		if len(markerHolder) == 4 {
+		if len(markerHolder) == 14 {
 			return i + 1
 		}
 	}
