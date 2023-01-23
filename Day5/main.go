@@ -12,9 +12,17 @@ func main() {
 	fmt.Println()
 	input := filereader.ReadFile("input.txt")
 	warehouse := parseWarehouseInput(input)
+
+	warehouseCopy := make(map[int]string)
+	for k, v := range warehouse {
+		warehouseCopy[k] = v
+	}
+
 	fmt.Println(warehouse)
-	warehouse = moveBoxes(input, 10, warehouse)
+	warehouse = moveBoxes(input, 10, warehouse, false)
+	warehouseWithNewCrane := moveBoxes(input, 10, warehouseCopy, true)
 	printResult(warehouse)
+	printResult(warehouseWithNewCrane)
 }
 
 func parseWarehouseInput(input []string) map[int]string {
@@ -51,12 +59,17 @@ func parseWarehouseInput(input []string) map[int]string {
 	return result
 }
 
-func moveBoxes(input []string, startingIndex int, warehouse map[int]string) map[int]string {
+func moveBoxes(input []string, startingIndex int, warehouse map[int]string, isNewCrane bool) map[int]string {
 	for i := startingIndex; i < len(input); i++ {
 		re := regexp.MustCompile(`[-]?\d[\d,]*[\.]?[\d{2}]*`)
 		directionsAsStringSlice := re.FindAllString(input[i], -1)
 		directions := stringSliceToIntSlice(directionsAsStringSlice)
-		warehouse = moveBox(warehouse, directions)
+
+		if isNewCrane {
+			warehouse = moveBoxWithImprovedCrane(warehouse, directions)
+		} else {
+			warehouse = moveBox(warehouse, directions)
+		}
 	}
 
 	return warehouse
@@ -80,6 +93,16 @@ func moveBox(warehouse map[int]string, directions []int) map[int]string {
 		warehouse[directions[1]] = warehouseStack[0 : warehouseStackLength-1]
 		warehouse[directions[2]] = warehouse[directions[2]] + lastElement
 	}
+
+	return warehouse
+}
+
+func moveBoxWithImprovedCrane(warehouse map[int]string, directions []int) map[int]string {
+	warehouseStack := warehouse[directions[1]]
+	warehouseStackLength := len(warehouseStack)
+	elementsToMove := warehouseStack[warehouseStackLength-directions[0]:]
+	warehouse[directions[1]] = warehouseStack[0 : warehouseStackLength-directions[0]]
+	warehouse[directions[2]] = warehouse[directions[2]] + elementsToMove
 
 	return warehouse
 }
