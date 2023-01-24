@@ -1,0 +1,8 @@
+$ cd /
+$ ls
+dir stambeto
+dir koceto
+$cd koceto
+ls
+dir niki
+cd ..

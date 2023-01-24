@@ -4,9 +4,6 @@ import (
 	"filereader"
 	"fmt"
 	"strings"
-	// "regexp"
-	// "strconv"
-	// "strings"
 )
 
 func main() {
